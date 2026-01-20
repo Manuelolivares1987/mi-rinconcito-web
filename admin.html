@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Mi Rinconcito</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #E53935;
+            --primary-dark: #C62828;
+            --secondary: #2196F3;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #f44336;
+            --text: #2D3436;
+            --text-light: #636E72;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .admin-header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .github-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .github-status.connected {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff9800;
+        }
+
+        .status-dot.connected {
+            background: #4CAF50;
+        }
+
+        .admin-header a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .admin-header a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 220px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: #fff5f5;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: #eee;
+            margin: 1rem 0;
+        }
+
+        .sidebar-label {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--bg);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group small {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #43a047;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: var(--text);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-github {
+            background: #24292e;
+            color: white;
+        }
+
+        .btn-github:hover {
+            background: #1a1e22;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .items-list {
+            margin-top: 1rem;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-preview {
+            width: 60px;
+            height: 45px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #ddd;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-actions button {
+            padding: 0.4rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.3s;
+            color: var(--text-light);
+        }
+
+        .item-actions button:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .item-actions .delete:hover {
+            background: #ffebee;
+            color: var(--danger);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .alert svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .alert-warning {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .alert-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 0.875rem 1.25rem;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .github-setup {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .setup-step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content code {
+            background: #1a1a2e;
+            color: #a0a0a0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .publish-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .publish-btn .btn {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 0.5rem;
+            }
+            .sidebar-menu {
+                display: flex;
+            }
+            .sidebar-menu a {
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .sidebar-divider, .sidebar-label {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <h1>
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Mi Rinconcito - Admin
+        </h1>
+        <div class="header-actions">
+            <div class="github-status" id="github-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">No conectado</span>
+            </div>
+            <a href="index.html" target="_blank">Ver Web</a>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <nav class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-section="inicio">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                    Inicio
+                </a></li>
+                <li><a href="#" data-section="galeria">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    Galería
+                </a></li>
+                <li><a href="#" data-section="videos">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    Videos
+                </a></li>
+                <li><a href="#" data-section="actividades">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+                    Actividades
+                </a></li>
+                <li><a href="#" data-section="testimonios">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Testimonios
+                </a></li>
+            </ul>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-label">Configuración</div>
+            <ul class="sidebar-menu">
+                <li><a href="#" data-section="informacion">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Información
+                </a></li>
+                <li><a href="#" data-section="github">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    GitHub
+                </a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <!-- Inicio -->
+            <section id="inicio" class="section active">
+                <h2 class="section-title">Panel de Administración</h2>
+                <p class="section-subtitle">Gestiona el contenido de tu página web</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-fotos">0</div>
+                        <div class="stat-label">Fotos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-videos">0</div>
+                        <div class="stat-label">Videos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-actividades">0</div>
+                        <div class="stat-label">Actividades</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-testimonios">0</div>
+                        <div class="stat-label">Testimonios</div>
+                    </div>
+                </div>
+
+                <div id="github-alert"></div>
+
+                <div class="card">
+                    <h3 class="card-title">Acciones Rápidas</h3>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="showSection('galeria')">+ Agregar Foto</button>
+                        <button class="btn btn-secondary" onclick="showSection('videos')">+ Agregar Video</button>
+                        <button class="btn btn-secondary" onclick="showSection('actividades')">+ Agregar Actividad</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Galería -->
+            <section id="galeria" class="section">
+                <h2 class="section-title">Galería de Fotos</h2>
+                <p class="section-subtitle">Agrega fotos de las instalaciones</p>
+
+                <div class="card">
+                    <h3 class="card-title">+ Nueva Foto</h3>
+                    <form id="form-foto" onsubmit="agregarFoto(event)">
+                        <div class="form-group">
+                            <label>Nombre del archivo</label>
+                            <input type="text" class="form-control" id="foto-imagen" placeholder="ej: sala-principal.jpg" required>
+                            <small>Guarda la foto en <strong>img/galeria/</strong> primero</small>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" class="form-control" id="foto-titulo" placeholder="ej: Sala Principal" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <input type="text" class="form-control" id="foto-descripcion" placeholder="ej: Nuestra sala multiuso">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Foto</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Fotos Actuales</h3>
+                    <div class="items-list" id="lista-fotos"></div>
+                </div>
+            </section>
+
+            <!-- Videos -->
+            <section id="videos" class="section">
+                <h2 class="section-title">Videos de YouTube</h2>
+                <p class="section-subtitle">Agrega videos del jardín</p>
+
+                <div class="alert alert-info">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span>Del enlace <code>youtube.com/watch?v=ABC123</code>, el código es <strong>ABC123</strong></span>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">+ Nuevo Video</h3>
+                    <form id="form-video" onsubmit="agregarVideo(event)">
+                        <div class="form-group">
+                            <label>Código de YouTube</label>
+                            <input type="text" class="form-control" id="video-codigo" placeholder="ej: dQw4w9WgXcQ" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" class="form-control" id="video-titulo" placeholder="ej: Un día en Mi Rinconcito" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descripción</label>
+                                <input type="text" class="form-control" id="video-descripcion" placeholder="ej: Conoce nuestras instalaciones">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Video</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Videos Actuales</h3>
+                    <div class="items-list" id="lista-videos"></div>
+                </div>
+            </section>
+
+            <!-- Actividades -->
+            <section id="actividades" class="section">
+                <h2 class="section-title">Actividades y Noticias</h2>
+                <p class="section-subtitle">Publica eventos del jardín</p>
+
+                <div class="card">
+                    <h3 class="card-title">+ Nueva Actividad</h3>
+                    <form id="form-actividad" onsubmit="agregarActividad(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha</label>
+                                <input type="text" class="form-control" id="actividad-fecha" placeholder="ej: 15 de Marzo 2026" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Título</label>
+                                <input type="text" class="form-control" id="actividad-titulo" placeholder="ej: Día del Libro" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea class="form-control" id="actividad-descripcion" placeholder="Describe la actividad..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Imagen (opcional)</label>
+                            <input type="text" class="form-control" id="actividad-imagen" placeholder="ej: dia-del-libro.jpg">
+                            <small>Guarda la imagen en <strong>img/actividades/</strong></small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Actividad</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Actividades Publicadas</h3>
+                    <div class="items-list" id="lista-actividades"></div>
+                </div>
+            </section>
+
+            <!-- Testimonios -->
+            <section id="testimonios" class="section">
+                <h2 class="section-title">Testimonios</h2>
+                <p class="section-subtitle">Opiniones de los padres</p>
+
+                <div class="card">
+                    <h3 class="card-title">+ Nuevo Testimonio</h3>
+                    <form id="form-testimonio" onsubmit="agregarTestimonio(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" class="form-control" id="testimonio-nombre" placeholder="ej: María González" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Relación</label>
+                                <input type="text" class="form-control" id="testimonio-relacion" placeholder="ej: Mamá de Sofía" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Testimonio</label>
+                            <textarea class="form-control" id="testimonio-texto" placeholder="Escribe el testimonio..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Testimonio</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Testimonios Actuales</h3>
+                    <div class="items-list" id="lista-testimonios"></div>
+                </div>
+            </section>
+
+            <!-- Información -->
+            <section id="informacion" class="section">
+                <h2 class="section-title">Información del Jardín</h2>
+                <p class="section-subtitle">Datos de contacto</p>
+
+                <div class="card">
+                    <form id="form-info">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Teléfono Celular</label>
+                                <input type="text" class="form-control" id="info-celular" value="+56 9 6820 4684">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono Fijo</label>
+                                <input type="text" class="form-control" id="info-fijo" value="+56 51 229 3108">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>WhatsApp (sin espacios)</label>
+                                <input type="text" class="form-control" id="info-whatsapp" value="56968204684">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" id="info-email" placeholder="correo@ejemplo.cl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Instagram</label>
+                            <input type="text" class="form-control" id="info-instagram" value="https://www.instagram.com/jardininfantilmirinconcito/">
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="guardarInfo()">Guardar Información</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- GitHub -->
+            <section id="github" class="section">
+                <h2 class="section-title">Configuración de GitHub</h2>
+                <p class="section-subtitle">Conecta con GitHub para publicar cambios automáticamente</p>
+
+                <div class="github-setup">
+                    <div class="alert alert-info">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>Una vez configurado, podrás publicar cambios con un solo clic</span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Paso 1: Crear repositorio en GitHub</h3>
+                        <div class="setup-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <p>Ve a <a href="https://github.com/new" target="_blank">github.com/new</a></p>
+                                <p>Nombre del repositorio: <code>mi-rinconcito-web</code></p>
+                                <p>Marca "Public" y clic en "Create repository"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Paso 2: Crear Token de Acceso</h3>
+                        <div class="setup-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <p>Ve a <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></p>
+                                <p>Nombre: <code>Mi Rinconcito Admin</code></p>
+                                <p>Marca los permisos: <strong>repo</strong> (todos)</p>
+                                <p>Clic en "Generate token" y copia el token</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Paso 3: Configurar conexión</h3>
+                        <form id="form-github" onsubmit="conectarGitHub(event)">
+                            <div class="form-group">
+                                <label>Usuario de GitHub</label>
+                                <input type="text" class="form-control" id="github-user" placeholder="tu-usuario" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nombre del Repositorio</label>
+                                <input type="text" class="form-control" id="github-repo" value="mi-rinconcito-web" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Token de Acceso</label>
+                                <input type="password" class="form-control" id="github-token" placeholder="ghp_xxxxxxxxxxxx" required>
+                                <small>El token se guarda solo en tu navegador</small>
+                            </div>
+                            <button type="submit" class="btn btn-github">
+                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                Conectar con GitHub
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card" id="github-connected" style="display: none;">
+                        <h3 class="card-title" style="color: var(--success);">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            Conectado a GitHub
+                        </h3>
+                        <p style="margin-bottom: 1rem;">Repositorio: <strong id="connected-repo"></strong></p>
+                        <button class="btn btn-danger btn-sm" onclick="desconectarGitHub()">Desconectar</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Botón Publicar -->
+    <div class="publish-btn" id="publish-btn" style="display: none;">
+        <button class="btn btn-success btn-lg" onclick="publicarCambios()" id="btn-publicar">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Publicar Cambios
+        </button>
+    </div>
+
+    <script>
+        // ============================================
+        // DATOS
+        // ============================================
+        let datos = {
+            informacion: {
+                nombre: "Jardín Infantil Mi Rinconcito",
+                slogan: "Educando con Amor",
+                direccion: "Manuel Bulnes 3603, La Serena",
+                telefonoCelular: "+56 9 6820 4684",
+                telefonoFijo: "+56 51 229 3108",
+                whatsapp: "56968204684",
+                email: "",
+                instagram: "https://www.instagram.com/jardininfantilmirinconcito/",
+                facebook: ""
+            },
+            galeria: [],
+            videos: [],
+            actividades: [],
+            testimonios: []
+        };
+
+        let githubConfig = {
+            user: '',
+            repo: '',
+            token: ''
+        };
+
+        // ============================================
+        // INICIALIZACIÓN
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarDatos();
+            cargarConfigGitHub();
+            actualizarUI();
+        });
+
+        function cargarDatos() {
+            const guardados = localStorage.getItem('miRinconcitoDatos');
+            if (guardados) {
+                datos = JSON.parse(guardados);
+            }
+        }
+
+        function guardarDatos() {
+            localStorage.setItem('miRinconcitoDatos', JSON.stringify(datos));
+            actualizarUI();
+        }
+
+        function cargarConfigGitHub() {
+            const config = localStorage.getItem('miRinconcitoGitHub');
+            if (config) {
+                githubConfig = JSON.parse(config);
+                document.getElementById('github-user').value = githubConfig.user;
+                document.getElementById('github-repo').value = githubConfig.repo;
+                actualizarEstadoGitHub();
+            }
+        }
+
+        function actualizarUI() {
+            renderizarFotos();
+            renderizarVideos();
+            renderizarActividades();
+            renderizarTestimonios();
+            cargarInfoEnFormulario();
+            actualizarEstadisticas();
+            actualizarEstadoGitHub();
+        }
+
+        // ============================================
+        // NAVEGACIÓN
+        // ============================================
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+        }
+
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection(link.dataset.section);
+            });
+        });
+
+        // ============================================
+        // GITHUB
+        // ============================================
+        function conectarGitHub(e) {
+            e.preventDefault();
+            githubConfig = {
+                user: document.getElementById('github-user').value,
+                repo: document.getElementById('github-repo').value,
+                token: document.getElementById('github-token').value
+            };
+            localStorage.setItem('miRinconcitoGitHub', JSON.stringify(githubConfig));
+            mostrarNotificacion('Conectado a GitHub correctamente');
+            actualizarEstadoGitHub();
+        }
+
+        function desconectarGitHub() {
+            localStorage.removeItem('miRinconcitoGitHub');
+            githubConfig = { user: '', repo: '', token: '' };
+            document.getElementById('github-token').value = '';
+            actualizarEstadoGitHub();
+            mostrarNotificacion('Desconectado de GitHub');
+        }
+
+        function actualizarEstadoGitHub() {
+            const conectado = githubConfig.token && githubConfig.user && githubConfig.repo;
+
+            document.getElementById('status-dot').className = 'status-dot' + (conectado ? ' connected' : '');
+            document.getElementById('status-text').textContent = conectado ? 'GitHub conectado' : 'No conectado';
+            document.getElementById('github-status').className = 'github-status' + (conectado ? ' connected' : '');
+
+            document.getElementById('publish-btn').style.display = conectado ? 'block' : 'none';
+            document.getElementById('github-connected').style.display = conectado ? 'block' : 'none';
+
+            if (conectado) {
+                document.getElementById('connected-repo').textContent = `${githubConfig.user}/${githubConfig.repo}`;
+            }
+
+            // Mostrar alerta en inicio
+            const alertDiv = document.getElementById('github-alert');
+            if (!conectado) {
+                alertDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                        <span>Conecta con GitHub para publicar cambios automáticamente. <a href="#" onclick="showSection('github')">Configurar</a></span>
+                    </div>
+                `;
+            } else {
+                alertDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                        <span>Conectado a GitHub. Los cambios se publicarán en <strong>${githubConfig.user}.github.io/${githubConfig.repo}</strong></span>
+                    </div>
+                `;
+            }
+        }
+
+        async function publicarCambios() {
+            if (!githubConfig.token) {
+                mostrarNotificacion('Configura GitHub primero', true);
+                showSection('github');
+                return;
+            }
+
+            const btn = document.getElementById('btn-publicar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Publicando...';
+
+            try {
+                const contenido = generarContenidoJS();
+                const contenidoBase64 = btoa(unescape(encodeURIComponent(contenido)));
+
+                // Obtener SHA del archivo existente (si existe)
+                let sha = '';
+                try {
+                    const response = await fetch(
+                        `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data/contenido.js`,
+                        {
+                            headers: {
+                                'Authorization': `token ${githubConfig.token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        }
+                    );
+                    if (response.ok) {
+                        const data = await response.json();
+                        sha = data.sha;
+                    }
+                } catch (e) {}
+
+                // Crear o actualizar archivo
+                const body = {
+                    message: `Actualización de contenido - ${new Date().toLocaleString('es-CL')}`,
+                    content: contenidoBase64,
+                    branch: 'main'
+                };
+                if (sha) body.sha = sha;
+
+                const response = await fetch(
+                    `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data/contenido.js`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${githubConfig.token}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    }
+                );
+
+                if (response.ok) {
+                    mostrarNotificacion('¡Cambios publicados! La página se actualizará en unos segundos.');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+            } catch (error) {
+                mostrarNotificacion('Error: ' + error.message, true);
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Publicar Cambios';
+        }
+
+        function generarContenidoJS() {
+            return `const CONTENIDO = {
+    informacion: ${JSON.stringify(datos.informacion, null, 8)},
+    galeria: ${JSON.stringify(datos.galeria, null, 8)},
+    videos: ${JSON.stringify(datos.videos, null, 8)},
+    actividades: ${JSON.stringify(datos.actividades, null, 8)},
+    testimonios: ${JSON.stringify(datos.testimonios, null, 8)},
+    equipo: [
+        {
+            nombre: "Giovanna Solís Rojas",
+            cargo: "Directora y Fundadora",
+            descripcion: "Educadora de Párvulos",
+            foto: "img/directora.jpg"
+        }
+    ],
+    servicios: [
+        { titulo: "Media Jornada", descripcion: "Jornada de mañana o tarde", icono: "clock" },
+        { titulo: "Jornada Especial", descripcion: "Horario extendido", icono: "calendar" },
+        { titulo: "Metodología High Scope", descripcion: "Aprendizaje activo", icono: "book" },
+        { titulo: "Grupos Reducidos", descripcion: "Máximo 20 niños", icono: "users" }
+    ]
+};
+if (typeof window !== 'undefined') window.CONTENIDO = CONTENIDO;`;
+        }
+
+        // ============================================
+        // FOTOS
+        // ============================================
+        function agregarFoto(e) {
+            e.preventDefault();
+            datos.galeria.push({
+                imagen: 'img/galeria/' + document.getElementById('foto-imagen').value,
+                titulo: document.getElementById('foto-titulo').value,
+                descripcion: document.getElementById('foto-descripcion').value || ''
+            });
+            guardarDatos();
+            e.target.reset();
+            mostrarNotificacion('Foto agregada');
+        }
+
+        function eliminarFoto(i) {
+            if (confirm('¿Eliminar foto?')) {
+                datos.galeria.splice(i, 1);
+                guardarDatos();
+            }
+        }
+
+        function renderizarFotos() {
+            const lista = document.getElementById('lista-fotos');
+            if (datos.galeria.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay fotos</p></div>';
+                return;
+            }
+            lista.innerHTML = datos.galeria.map((f, i) => `
+                <div class="item">
+                    <div class="item-preview"><img src="${f.imagen}" onerror="this.style.display='none'"></div>
+                    <div class="item-info">
+                        <div class="item-title">${f.titulo}</div>
+                        <div class="item-desc">${f.descripcion || f.imagen}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="delete" onclick="eliminarFoto(${i})">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // VIDEOS
+        // ============================================
+        function agregarVideo(e) {
+            e.preventDefault();
+            datos.videos.push({
+                codigoYoutube: document.getElementById('video-codigo').value,
+                titulo: document.getElementById('video-titulo').value,
+                descripcion: document.getElementById('video-descripcion').value || ''
+            });
+            guardarDatos();
+            e.target.reset();
+            mostrarNotificacion('Video agregado');
+        }
+
+        function eliminarVideo(i) {
+            if (confirm('¿Eliminar video?')) {
+                datos.videos.splice(i, 1);
+                guardarDatos();
+            }
+        }
+
+        function renderizarVideos() {
+            const lista = document.getElementById('lista-videos');
+            if (datos.videos.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay videos</p></div>';
+                return;
+            }
+            lista.innerHTML = datos.videos.map((v, i) => `
+                <div class="item">
+                    <div class="item-preview" style="background:#1a1a1a;color:white;">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-title">${v.titulo}</div>
+                        <div class="item-desc">${v.codigoYoutube}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="delete" onclick="eliminarVideo(${i})">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // ACTIVIDADES
+        // ============================================
+        function agregarActividad(e) {
+            e.preventDefault();
+            const img = document.getElementById('actividad-imagen').value;
+            datos.actividades.unshift({
+                fecha: document.getElementById('actividad-fecha').value,
+                titulo: document.getElementById('actividad-titulo').value,
+                descripcion: document.getElementById('actividad-descripcion').value,
+                imagen: img ? 'img/actividades/' + img : ''
+            });
+            guardarDatos();
+            e.target.reset();
+            mostrarNotificacion('Actividad agregada');
+        }
+
+        function eliminarActividad(i) {
+            if (confirm('¿Eliminar actividad?')) {
+                datos.actividades.splice(i, 1);
+                guardarDatos();
+            }
+        }
+
+        function renderizarActividades() {
+            const lista = document.getElementById('lista-actividades');
+            if (datos.actividades.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay actividades</p></div>';
+                return;
+            }
+            lista.innerHTML = datos.actividades.map((a, i) => `
+                <div class="item">
+                    <div class="item-info">
+                        <div class="item-title">${a.titulo}</div>
+                        <div class="item-desc">${a.fecha}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="delete" onclick="eliminarActividad(${i})">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // TESTIMONIOS
+        // ============================================
+        function agregarTestimonio(e) {
+            e.preventDefault();
+            datos.testimonios.push({
+                nombre: document.getElementById('testimonio-nombre').value,
+                relacion: document.getElementById('testimonio-relacion').value,
+                texto: document.getElementById('testimonio-texto').value,
+                foto: ''
+            });
+            guardarDatos();
+            e.target.reset();
+            mostrarNotificacion('Testimonio agregado');
+        }
+
+        function eliminarTestimonio(i) {
+            if (confirm('¿Eliminar testimonio?')) {
+                datos.testimonios.splice(i, 1);
+                guardarDatos();
+            }
+        }
+
+        function renderizarTestimonios() {
+            const lista = document.getElementById('lista-testimonios');
+            if (datos.testimonios.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>No hay testimonios</p></div>';
+                return;
+            }
+            lista.innerHTML = datos.testimonios.map((t, i) => `
+                <div class="item">
+                    <div class="item-info">
+                        <div class="item-title">${t.nombre}</div>
+                        <div class="item-desc">${t.relacion}</div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="delete" onclick="eliminarTestimonio(${i})">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // INFORMACIÓN
+        // ============================================
+        function guardarInfo() {
+            datos.informacion.telefonoCelular = document.getElementById('info-celular').value;
+            datos.informacion.telefonoFijo = document.getElementById('info-fijo').value;
+            datos.informacion.whatsapp = document.getElementById('info-whatsapp').value;
+            datos.informacion.email = document.getElementById('info-email').value;
+            datos.informacion.instagram = document.getElementById('info-instagram').value;
+            guardarDatos();
+            mostrarNotificacion('Información guardada');
+        }
+
+        function cargarInfoEnFormulario() {
+            document.getElementById('info-celular').value = datos.informacion.telefonoCelular || '';
+            document.getElementById('info-fijo').value = datos.informacion.telefonoFijo || '';
+            document.getElementById('info-whatsapp').value = datos.informacion.whatsapp || '';
+            document.getElementById('info-email').value = datos.informacion.email || '';
+            document.getElementById('info-instagram').value = datos.informacion.instagram || '';
+        }
+
+        // ============================================
+        // ESTADÍSTICAS
+        // ============================================
+        function actualizarEstadisticas() {
+            document.getElementById('stat-fotos').textContent = datos.galeria.length;
+            document.getElementById('stat-videos').textContent = datos.videos.length;
+            document.getElementById('stat-actividades').textContent = datos.actividades.length;
+            document.getElementById('stat-testimonios').textContent = datos.testimonios.length;
+        }
+
+        // ============================================
+        // NOTIFICACIONES
+        // ============================================
+        function mostrarNotificacion(msg, error = false) {
+            const n = document.createElement('div');
+            n.className = 'notification' + (error ? ' error' : '');
+            n.innerHTML = `<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="${error ? 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z' : 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'}"/></svg> ${msg}`;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 4000);
+        }
+    </script>
+</body>
+</html>
