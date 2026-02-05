@@ -44,9 +44,9 @@ const CONTENIDO = {
 
         // Horarios
         periodoFuncionamiento: "Marzo - Enero",
-        jornadas: "Media jornada y jornada especial",
+        jornadas: "08:30 a 18:00 hrs",
         edades: "2 a 5 años 11 meses",
-        capacidad: "20 niños por jornada"
+        capacidad: "12 niños por jornada"
     },
 
     /* --------------------------------------------------------
@@ -237,7 +237,7 @@ const CONTENIDO = {
         },
         {
             titulo: "Grupos Reducidos",
-            descripcion: "Máximo 20 niños por jornada",
+            descripcion: "Máximo 12 niños por jornada",
             icono: "users"
         }
     ]
