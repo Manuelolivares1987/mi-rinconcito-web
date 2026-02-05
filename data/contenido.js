@@ -50,41 +50,51 @@ const CONTENIDO = {
     },
 
     /* --------------------------------------------------------
-       GALERÍA DE FOTOS
+       GALERÍA DE FOTOS POR CATEGORÍA
        --------------------------------------------------------
-       Para agregar fotos:
-       1. Guarda la foto en la carpeta "web/img/galeria/"
-       2. Agrega una nueva entrada aquí abajo
+       Cada categoría tiene:
+       - nombre: Nombre visible de la categoría
+       - descripcion: Texto breve que aparece en la tarjeta
+       - carpeta: Carpeta dentro de "img/galeria/" donde están las fotos
+       - prefijo: Nombre base de las fotos (ej: "salon" para salon_1.jpg, salon_2.jpg...)
+       - cantidad: Número total de fotos en esa categoría
+       - extension: Extensión de las fotos (jpg, png, webp)
+       - portada: Número de la foto que se usa como portada de la categoría
 
-       Ejemplo:
-       {
-           imagen: "img/galeria/nombre-foto.jpg",
-           titulo: "Título de la foto",
-           descripcion: "Descripción breve"
-       },
+       Para agregar una categoría nueva:
+       1. Crea la carpeta dentro de "web/img/galeria/"
+       2. Nombra las fotos como: prefijo_1.jpg, prefijo_2.jpg, etc.
+       3. Agrega la entrada aquí abajo
        -------------------------------------------------------- */
     galeria: [
         {
-            imagen: "img/galeria/sala-principal.jpg",
-            titulo: "Sala Principal",
-            descripcion: "Nuestra sala multiuso con las 4 áreas de trabajo"
+            nombre: "Salón",
+            descripcion: "Nuestra sala multiuso con las áreas de trabajo",
+            carpeta: "img/galeria/salon",
+            prefijo: "salon",
+            cantidad: 10,
+            extension: "jpeg",
+            portada: 1
         },
         {
-            imagen: "img/galeria/area-arte.jpg",
-            titulo: "Área de Arte",
-            descripcion: "Donde los niños expresan su creatividad"
+            nombre: "Patio de Juegos",
+            descripcion: "Espacio al aire libre para jugar y explorar",
+            carpeta: "img/galeria/patio_juegos",
+            prefijo: "patio_juegos",
+            cantidad: 5,
+            extension: "jpeg",
+            portada: 1
         },
         {
-            imagen: "img/galeria/patio-juegos.jpg",
-            titulo: "Patio de Juegos",
-            descripcion: "Espacio al aire libre para jugar y explorar"
-        },
-        {
-            imagen: "img/galeria/area-construccion.jpg",
-            titulo: "Área de Construcción",
-            descripcion: "Bloques y materiales para construir y crear"
+            nombre: "Actividades",
+            descripcion: "Momentos especiales y actividades con los niños",
+            carpeta: "img/galeria/actividades",
+            prefijo: "actividad",
+            cantidad: 4,
+            extension: "jpeg",
+            portada: 1
         }
-        // Agrega más fotos siguiendo el mismo formato arriba
+        // Agrega más categorías siguiendo el mismo formato
     ],
 
     /* --------------------------------------------------------

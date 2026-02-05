@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cargarTestimonios();
     }
 
-    // Cargar galería de fotos
+    // Cargar galería de fotos por categorías
     function cargarGaleria() {
         const galeriaContainer = document.getElementById('galeria-fotos');
         if (!galeriaContainer || !CONTENIDO.galeria) return;
@@ -333,21 +333,78 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        mostrarCategorias(galeriaContainer);
+    }
+
+    // Mostrar tarjetas de categorías
+    function mostrarCategorias(container) {
         let html = '';
-        CONTENIDO.galeria.forEach((foto, index) => {
+        CONTENIDO.galeria.forEach((cat, index) => {
+            const portadaSrc = `${cat.carpeta}/${cat.prefijo}_${cat.portada}.${cat.extension}`;
             html += `
-                <div class="gallery-item" onclick="abrirLightbox(${index})">
-                    <img src="${foto.imagen}" alt="${foto.titulo}"
-                         onerror="this.parentElement.classList.add('placeholder'); this.outerHTML='<span>${foto.titulo}</span>'">
-                    <div class="gallery-overlay">
-                        <h4>${foto.titulo}</h4>
-                        <p>${foto.descripcion}</p>
+                <div class="gallery-category-card" onclick="abrirCategoria(${index})">
+                    <img src="${portadaSrc}" alt="${cat.nombre}"
+                         onerror="this.parentElement.classList.add('placeholder'); this.outerHTML='<span>${cat.nombre}</span>'">
+                    <div class="gallery-category-overlay">
+                        <h4>${cat.nombre}</h4>
+                        <p>${cat.descripcion}</p>
+                        <span class="gallery-category-count">${cat.cantidad} fotos</span>
                     </div>
                 </div>
             `;
         });
-        galeriaContainer.innerHTML = html;
+        container.innerHTML = html;
     }
+
+    // Abrir una categoría y mostrar todas sus fotos
+    window.abrirCategoria = function(catIndex) {
+        const galeriaContainer = document.getElementById('galeria-fotos');
+        const cat = CONTENIDO.galeria[catIndex];
+        if (!galeriaContainer || !cat) return;
+
+        // Generar lista de fotos de la categoría
+        const fotos = [];
+        for (let i = 1; i <= cat.cantidad; i++) {
+            fotos.push({
+                src: `${cat.carpeta}/${cat.prefijo}_${i}.${cat.extension}`,
+                titulo: `${cat.nombre} - Foto ${i}`
+            });
+        }
+
+        // Botón volver + grid de fotos
+        let html = `
+            <div class="gallery-back-bar">
+                <button class="gallery-back-btn" onclick="volverCategorias()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Volver a categorías
+                </button>
+                <h4 class="gallery-category-title">${cat.nombre}</h4>
+            </div>
+        `;
+
+        fotos.forEach((foto, i) => {
+            html += `
+                <div class="gallery-item" onclick="abrirLightboxCategoria(${catIndex}, ${i})">
+                    <img src="${foto.src}" alt="${foto.titulo}"
+                         onerror="this.parentElement.classList.add('placeholder'); this.outerHTML='<span>Foto ${i + 1}</span>'">
+                    <div class="gallery-overlay">
+                        <h4>${foto.titulo}</h4>
+                    </div>
+                </div>
+            `;
+        });
+
+        galeriaContainer.innerHTML = html;
+        galeriaContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    // Volver a la vista de categorías
+    window.volverCategorias = function() {
+        const galeriaContainer = document.getElementById('galeria-fotos');
+        if (galeriaContainer) {
+            mostrarCategorias(galeriaContainer);
+        }
+    };
 
     // Cargar videos de YouTube
     function cargarVideos() {
@@ -451,11 +508,21 @@ document.addEventListener('DOMContentLoaded', function() {
         testimoniosContainer.innerHTML = html;
     }
 
-    // Lightbox para galería
-    window.abrirLightbox = function(index) {
-        if (!CONTENIDO.galeria || !CONTENIDO.galeria[index]) return;
+    // Lightbox para galería por categoría
+    window.abrirLightboxCategoria = function(catIndex, fotoIndex) {
+        const cat = CONTENIDO.galeria[catIndex];
+        if (!cat) return;
 
-        const foto = CONTENIDO.galeria[index];
+        const totalFotos = cat.cantidad;
+
+        function getFoto(idx) {
+            return {
+                src: `${cat.carpeta}/${cat.prefijo}_${idx + 1}.${cat.extension}`,
+                titulo: `${cat.nombre} - Foto ${idx + 1}`
+            };
+        }
+
+        const foto = getFoto(fotoIndex);
 
         // Crear lightbox
         const lightbox = document.createElement('div');
@@ -463,10 +530,10 @@ document.addEventListener('DOMContentLoaded', function() {
         lightbox.innerHTML = `
             <div class="lightbox-content">
                 <button class="lightbox-close">&times;</button>
-                <img src="${foto.imagen}" alt="${foto.titulo}">
+                <img src="${foto.src}" alt="${foto.titulo}">
                 <div class="lightbox-caption">
                     <h4>${foto.titulo}</h4>
-                    <p>${foto.descripcion}</p>
+                    <p>${fotoIndex + 1} / ${totalFotos}</p>
                 </div>
                 <button class="lightbox-prev">&#10094;</button>
                 <button class="lightbox-next">&#10095;</button>
@@ -483,43 +550,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Navegación
-        let currentIndex = index;
+        let currentIndex = fotoIndex;
 
         lightbox.querySelector('.lightbox-prev').addEventListener('click', (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex - 1 + CONTENIDO.galeria.length) % CONTENIDO.galeria.length;
+            currentIndex = (currentIndex - 1 + totalFotos) % totalFotos;
             actualizarLightbox(currentIndex, lightbox);
         });
 
         lightbox.querySelector('.lightbox-next').addEventListener('click', (e) => {
             e.stopPropagation();
-            currentIndex = (currentIndex + 1) % CONTENIDO.galeria.length;
+            currentIndex = (currentIndex + 1) % totalFotos;
             actualizarLightbox(currentIndex, lightbox);
         });
 
         // Teclas
-        document.addEventListener('keydown', function handleKeydown(e) {
+        function handleKeydown(e) {
             if (e.key === 'Escape') cerrarLightbox();
             if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + CONTENIDO.galeria.length) % CONTENIDO.galeria.length;
+                currentIndex = (currentIndex - 1 + totalFotos) % totalFotos;
                 actualizarLightbox(currentIndex, lightbox);
             }
             if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % CONTENIDO.galeria.length;
+                currentIndex = (currentIndex + 1) % totalFotos;
                 actualizarLightbox(currentIndex, lightbox);
             }
-        });
+        }
+        document.addEventListener('keydown', handleKeydown);
 
         function cerrarLightbox() {
             lightbox.remove();
             document.body.style.overflow = '';
+            document.removeEventListener('keydown', handleKeydown);
         }
 
         function actualizarLightbox(idx, lb) {
-            const f = CONTENIDO.galeria[idx];
-            lb.querySelector('img').src = f.imagen;
+            const f = getFoto(idx);
+            lb.querySelector('img').src = f.src;
             lb.querySelector('h4').textContent = f.titulo;
-            lb.querySelector('.lightbox-caption p').textContent = f.descripcion;
+            lb.querySelector('.lightbox-caption p').textContent = `${idx + 1} / ${totalFotos}`;
         }
     };
 
