@@ -167,15 +167,27 @@ const CONTENIDO = {
        -------------------------------------------------------- */
     testimonios: [
         {
-            nombre: "Apoderado",
-            relacion: "Padre de alumno",
-            texto: "Mi Rinconcito ha sido fundamental en el desarrollo de mi hijo. La metodología High Scope realmente funciona, veo cómo ha crecido su autonomía y creatividad.",
+            nombre: "Fernanda Salas",
+            relacion: "Mamá de alumnos",
+            texto: "Nuestros tres hijos han pasado por el jardín Mi Rinconcito y siempre hemos tenido una excelente experiencia. Es un jardín muy familiar, cercano y preocupado por entregar valores, cariño y un ambiente seguro para los niños. Lo recomendamos totalmente.",
             foto: ""
         },
         {
-            nombre: "Apoderada",
-            relacion: "Madre de alumna",
-            texto: "El cariño y profesionalismo de las educadoras es excepcional. Mi hija llega feliz todos los días al jardín.",
+            nombre: "Paula Collado",
+            relacion: "Mamá de alumno",
+            texto: "Quiero manifestar y agradecer al jardín por el cariño, la dedicación y el profesionalismo con el que cuidan y educan a nuestro hijo. Desde el primer día supe que había sido la mejor decisión en matricularlo en Mi Rinconcito y hemos visto a lo largo de un año un ambiente lleno de amor, respeto y aprendizaje, donde los niños se sienten seguros, felices y motivados por descubrir y aprender cosas nuevas todos los días. Las tías demuestran un compromiso admirable, fomentando valores, autonomía y desarrollo integral en cada etapa. Como familia estamos felices.",
+            foto: ""
+        },
+        {
+            nombre: "Manuel Olivares",
+            relacion: "Papá de alumno",
+            texto: "Como papá de un niño con síndrome de Down, estoy enormemente agradecido con este jardín. Desde que mi hijo ingresó, sus avances han sido increíbles: ha ganado autonomía, confianza y nuevas habilidades. ¡Incluso dejó el pañal! Algo que parecía un gran desafío se logró gracias al trabajo cariñoso y comprometido del equipo. Se nota que aquí cada niño es valorado y estimulado según sus capacidades. Lo recomiendo con total confianza.",
+            foto: ""
+        },
+        {
+            nombre: "Ana María Boyd",
+            relacion: "Mamá de alumno",
+            texto: "Elegir el jardín de nuestro hijo no fue fácil, pero Mi Rinconcito nos conquistó desde el primer día. El equipo transmite una calidez y dedicación que se nota en cada detalle. Nuestro hijo llega feliz, ha desarrollado su lenguaje, su creatividad y sus habilidades sociales de una forma que nos sorprende cada semana. Es un lugar donde los niños aprenden jugando, se sienten seguros y crecen rodeados de cariño. Lo recomendamos de corazón a cualquier familia.",
             foto: ""
         }
         // Agrega más testimonios siguiendo el mismo formato
