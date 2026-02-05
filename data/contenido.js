@@ -144,21 +144,9 @@ const CONTENIDO = {
        -------------------------------------------------------- */
     actividades: [
         {
-            fecha: "Marzo 2026",
-            titulo: "Inicio Año Escolar 2026",
-            descripcion: "Comenzamos un nuevo año lleno de aprendizajes, juegos y aventuras. ¡Bienvenidos todos!",
-            imagen: ""
-        },
-        {
-            fecha: "Abril 2026",
-            titulo: "Día del Libro",
-            descripcion: "Celebramos el día del libro con actividades de lectura y cuenta cuentos.",
-            imagen: ""
-        },
-        {
-            fecha: "Mayo 2026",
-            titulo: "Día de la Madre",
-            descripcion: "Los niños preparan sorpresas especiales para sus mamás.",
+            fecha: "Lunes 02 de Marzo 2026",
+            titulo: "Inicio de Clases",
+            descripcion: "¡El lunes 02 de Marzo comenzamos las clases! Cupos limitados.",
             imagen: ""
         }
         // Agrega más actividades siguiendo el mismo formato
