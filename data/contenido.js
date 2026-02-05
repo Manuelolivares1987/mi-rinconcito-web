@@ -26,7 +26,7 @@ const CONTENIDO = {
     informacion: {
         nombre: "Jardín Infantil Mi Rinconcito",
         slogan: "Educando con Amor",
-        añosExperiencia: 24,
+        añosExperiencia: 25,
         añoFundacion: 2001,
 
         // Contacto
@@ -210,7 +210,7 @@ const CONTENIDO = {
         {
             nombre: "Giovanna Solís Rojas",
             cargo: "Directora y Fundadora",
-            descripcion: "Educadora de Párvulos con más de 24 años de experiencia",
+            descripcion: "Educadora de Párvulos con más de 25 años de experiencia",
             foto: "img/directora.jpg"
         }
         // Agrega más miembros del equipo
