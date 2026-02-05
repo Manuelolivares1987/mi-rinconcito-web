@@ -44,7 +44,7 @@ const CONTENIDO = {
 
         // Horarios
         periodoFuncionamiento: "Marzo - Enero",
-        jornadas: "08:30 a 18:00 hrs",
+        jornadas: "Mañana (08:30-12:30), Tarde (14:00-18:00), Especial (08:30-15:00) y Completa (08:30-18:00)",
         edades: "2 a 5 años 11 meses",
         capacidad: "12 niños por jornada"
     },
@@ -221,14 +221,9 @@ const CONTENIDO = {
        -------------------------------------------------------- */
     servicios: [
         {
-            titulo: "Media Jornada",
-            descripcion: "Jornada de mañana o tarde",
+            titulo: "Jornadas Flexibles",
+            descripcion: "Mañana, tarde, especial o completa. Nos adaptamos a tus necesidades",
             icono: "clock"
-        },
-        {
-            titulo: "Jornada Especial",
-            descripcion: "Horario extendido según necesidades",
-            icono: "calendar"
         },
         {
             titulo: "Metodología High Scope",
